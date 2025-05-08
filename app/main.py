@@ -5,7 +5,7 @@ from passlib.context import CryptContext
 import jwt
 import datetime
 import motor.motor_asyncio
-from bson import ObjectId
+from bson import ObjectId  # Đây vẫn cần nếu bạn sử dụng ObjectId từ MongoDB
 
 # ----- Cấu hình ứng dụng -----
 app = FastAPI()
@@ -88,5 +88,4 @@ async def login(user: UserLogin):
             "email": db_user["email"]
         },
         "access_token": token,
-        "token_type": "bearer"
     }
