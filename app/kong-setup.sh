@@ -17,3 +17,17 @@ curl -i -X POST http://kong:8001/routes \
   --data "paths[]=/auth"
 
 echo "Auth service route created!"
+
+# Tạo service cho flashcard-service
+curl -i -X POST http://kong:8001/services \
+  --data "name=flashcard-service" \
+  --data "url=http://flashcard-service:5000"
+
+# Tạo route cho flashcard-service
+curl -i -X POST http://kong:8001/routes \
+  --data "service.name=flashcard-service" \
+  --data "paths[]=/api/decks" \
+  --data "strip_path=false"
+
+echo "Flashcard service route created!"
+

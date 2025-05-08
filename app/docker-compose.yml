@@ -28,6 +28,19 @@ services:
     ports:
       - "8002:8002"
 
+  flashcard-service:
+    build: ../../Module-Flashcard
+    container_name: flashcard-service
+    networks:
+      - kong-net
+    environment:
+      - MONGODB_URI=mongodb://admin:password@mongo:27017/nihongocast
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    restart: always
+
   kong-database:
     image: postgres:13
     container_name: kong-database
