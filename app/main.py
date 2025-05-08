@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 import jwt
 import datetime
 import motor.motor_asyncio
+from bson import ObjectId
 
 # ----- Cấu hình ứng dụng -----
 app = FastAPI()
@@ -64,6 +65,8 @@ async def register(user: UserRegister):
         "email": user.email}
 
 # ----- API đăng nhập -----
+from bson import ObjectId  # Thêm import này để xử lý ObjectId
+
 @app.post("/login")
 async def login(user: UserLogin):
     db_user = await users_collection.find_one({"email": user.email})
@@ -72,14 +75,20 @@ async def login(user: UserLogin):
 
     expiration = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
     token = jwt.encode(
-        {"sub": db_user["email"], "exp": expiration},
+        {
+            "sub": str(db_user["_id"]),  # dùng ID làm định danh
+            "exp": expiration
+        },
         SECRET_KEY,
         algorithm="HS256"
     )
 
     return {
-        "username": db_user["username"],  # Lấy username từ cơ sở dữ liệu
-        "email": db_user["email"],
+        "user": {
+            "id": str(db_user["_id"]),
+            "username": db_user["username"],
+            "email": db_user["email"]
+        },
         "access_token": token,
         "token_type": "bearer"
     }
