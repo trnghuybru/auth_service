@@ -64,9 +64,7 @@ async def register(user: UserRegister):
     return {"username": user.username,
         "email": user.email}
 
-# ----- API đăng nhập -----
-from bson import ObjectId  # Thêm import này để xử lý ObjectId
-
+# ----- API đăng nhập ----- 
 @app.post("/login")
 async def login(user: UserLogin):
     db_user = await users_collection.find_one({"email": user.email})
